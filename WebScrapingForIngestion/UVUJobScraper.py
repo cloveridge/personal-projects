@@ -1,3 +1,5 @@
+# import beautifulsoup as bs
+
 # class JobListing:
 #     def __init__(self,site,title,salary,postdate,description):
 #         self.site = site
