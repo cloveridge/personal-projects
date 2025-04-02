@@ -19,16 +19,37 @@ def ScrapeJobs_UVU(site,search):
 
     driver_service = EdgeService()
 
-    driver = Edge(service=driver_service,options=driver_options)
-    driver.get(search_url)
-    
-    sleep(1)
+    with Edge(service=driver_service,options=driver_options) as driver:
+        driver.get(search_url)
+        
+        sleep(1)
 
-    job_list_container = driver.find_element(By.CLASS_NAME, "unstyled.search-results-listing-container.job-listing-container")
-    job_list = job_list_container.find_elements(By.TAG_NAME, "li")
-    
-    for element in job_list:
-        print(element)
+        job_list_container = driver.find_element(By.CLASS_NAME, "unstyled.search-results-listing-container.job-listing-container")
+        job_list = job_list_container.find_elements(By.XPATH, '//ul[contains(@class, "unstyled") and contains(@class, "search-results-listing-container") and contains(@class, "job-listing-container")]/li')
+        #parent_id = job_list[0].parent.id
+        jobs = []
+
+        for element in job_list:
+            title = element.text
+            job_metadata = element.find_element(By.CLASS_NAME,'list-meta').find_elements(By.TAG_NAME,'li')
+            job_type = job_metadata[0].text
+            job_category = job_metadata[1].text
+            job_description_top = element.find_element(By.CLASS_NAME,'list-entry').find_elements(By.TAG_NAME,'span')
+            job_description = f'{job_description_top[0].text} {job_description_top[1].text}'
+            job_window = element.find_element(By.CLASS_NAME,'list-published')
+            job_start = job_window.find_element(By.TAG_NAME,'span').find_element(By.TAG_NAME,'span').text
+            job_close = job_window.find_elements(By.TAG_NAME,'span')[3].text
+            #print(element)
+
+            jobs.append({'title':title  
+                        ,'job_type':job_type
+                        ,'job_category':job_category
+                        ,'job_description':job_description
+                        ,'job_start':job_start
+                        ,'job_close':job_close
+                        ,'job_salary':0})
+            #print(element.find_element())
+        print(jobs)
     
 
 
