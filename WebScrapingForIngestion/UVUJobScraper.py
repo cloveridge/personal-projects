@@ -30,7 +30,7 @@ def ScrapeJobs_UVU(site,search):
         jobs = []
 
         for element in job_list:
-            title = element.text
+            title = element.find_element(By.CLASS_NAME,'item-details-link').text
             job_metadata = element.find_element(By.CLASS_NAME,'list-meta').find_elements(By.TAG_NAME,'li')
             job_type = job_metadata[0].text
             job_category = job_metadata[1].text
@@ -48,8 +48,10 @@ def ScrapeJobs_UVU(site,search):
                         ,'job_start':job_start
                         ,'job_close':job_close
                         ,'job_salary':0})
+    return jobs
             #print(element.find_element())
-        print(jobs)
+
+#def SendJobDigest(job_list):
     
 
 
@@ -58,8 +60,16 @@ if __name__ == '__main__':
     sites_to_search = [
         {'Company':'UVU','Website':'https://www.schooljobs.com/careers/uvu?sort=PostingDate%7CDescending','Function':ScrapeJobs_UVU}
     ]
+    job_titles_list = []
     jobs_list = []
 
     for site in sites_to_search:
         for search in searches:
-            site['Function'](site,search)
+            job_results = site['Function'](site,search)
+            for job in job_results:
+                if job['title'] not in job_titles_list:
+                    job_titles_list.append(job['title'])
+                    jobs_list.append(job)
+    
+    for job in jobs_list:
+        print(job['title'])
