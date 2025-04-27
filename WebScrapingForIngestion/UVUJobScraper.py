@@ -1,13 +1,19 @@
 # import beautifulsoup as bs
-import selenium
+#import selenium
 from selenium.webdriver import Edge,EdgeOptions,EdgeService,Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
+#from selenium.webdriver.support.ui import WebDriverWait
 
-from bs4 import BeautifulSoup as bs
+#from bs4 import BeautifulSoup as bs
+from datetime import date
 from time import sleep
+import smtplib
+from email.mime.text import MIMEText
 
+
+# me == the sender's email address
+# you == the recipient's email address
 
 
 def ScrapeJobs_UVU(site,search):
@@ -51,10 +57,15 @@ def ScrapeJobs_UVU(site,search):
     return jobs
             #print(element.find_element())
 
-#def SendJobDigest(job_list):
+def SendJobDigest(job_list):
+    recent_jobs = []
+    for job in job_list:
+        if 'day' in job['job_start']:
+            recent_jobs.append(job)
+    msg = MIMEText()
+
     
-
-
+    
 if __name__ == '__main__':
     searches = ['data engineer','data warehouse','data']
     sites_to_search = [
@@ -72,4 +83,5 @@ if __name__ == '__main__':
                     jobs_list.append(job)
     
     for job in jobs_list:
-        print(job['title'])
+        print(f'{job['title']} - {job['job_salary']}')
+        print(f'\t{job['job_start']} - {job['job_close']}')
