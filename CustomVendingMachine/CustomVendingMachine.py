@@ -67,14 +67,22 @@ def ButtonPressed():
         if MakeMachineVend():
             UseSpareDrink()
 
+def DisplayDrinks():
+    daily_count = CheckDrinkTotals('daily')
+    spare_count = CheckDrinkTotals('spare')
+    GPIO.output((daily_count,spare_count))
+
 
 if __name__ == '__main__':
     last_day = datetime.now().day
     while True:
-        #wait for button press
+        # Display number of available drinks to display board
+        DisplayDrinks()
+
+        # Check for button press
+
         # Check if time is after midnight
         if datetime.now().day != last_day:
             RollDrinksOver()
             last_day = datetime.now().day
         time.sleep(1)
-        pass
